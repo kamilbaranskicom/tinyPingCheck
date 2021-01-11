@@ -5,6 +5,7 @@ Pings devices to check if they exist on network; outputs HTML
 * copy deviceList.sample.php to deviceList.php
 * edit deviceList.php
 * upload to the webserver
+* launch index.php in your browser
 * voila.
 
 ## Problems?
