@@ -1,6 +1,7 @@
 <?php
+
 /*
- * tinypingcheck v 1.0 // 2021.01.11
+ * tinypingcheck v 1.01 // 2021.01.12
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
@@ -69,14 +70,22 @@ function pingHostsAndEchoList($devices) {
 };
 
 function showArpResults($grep) {
+	echo '<div class="hidden" id="arpDiv"><h1>['.gethostname().':~]$ arp';
 	if ($grep) {
-		$grep = ' | grep -v "(incomplete)"';
-	} else {
-		$grep = '';
+		// we do grep the better way.
+		echo '<span id="grepCaption" onclick="'."document.querySelector('#incomplete').classList.remove('hidden');this.classList.add('hidden');".'"> | grep -v "(incomplete)"</span>';
 	};
-	echo '<div class="hidden" id="arpDiv"><h1>['.gethostname().':~]$ arp' . $grep . '</h1>' . "\n<pre>";
-	echo shell_exec('arp' . $grep);
+	echo '</h1>' . "\n<pre>";
+	$arpResults=array_filter(explode("\n", shell_exec('arp')),strlen);
+	echo join("\n",array_filter($arpResults,isComplete));
+	echo '<span id="incomplete" class="hidden">';
+	echo join("\n",array_filter($arpResults,function ($line) { return !isComplete($line); } ));
+	echo '</span>';
 	echo '<hr></pre></div>';
+};
+
+function isComplete($line) {
+	return (strpos($line, '(incomplete)')===false);
 };
 
 function changeHeader() {
