@@ -38,7 +38,7 @@ function turnOnErrorReporting() {
 	ini_set("display_errors", 1);
 	ini_set("display_startup_errors", 1);
 	ini_set("track_errors", 1);
-}
+};
 
 function turnOffOutputBuffering() {
 	ini_set("output_buffering", 0);
