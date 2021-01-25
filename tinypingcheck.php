@@ -10,7 +10,7 @@
  */
 
 function tinyPingCheck(
-	$configFileLocation,
+	$configFileLocation = __DIR__ . 'tpcConf.php',
 	$arp = true,
 	$grep = true
 ) {
@@ -23,7 +23,7 @@ function tinyPingCheck(
 		$devices = array_merge($devices, getUdhcpdDevices($udhcpdConfFileLocation, $udhcpdRegExpPattern));
 	};
 	if ($useDnsmasqConf) {
-		$devices = array_merge($devices, getDnsmasqDevices($dnsmasqConfFileLocation, $hostsFileLocation));
+		$devices = array_merge($devices, getDnsmasqDevices($dnsmasqConfFileLocation, $hostsFileLocation, $dnsmasqRegExpPattern, $hostsRegExpPattern));
 	};
 	pingHostsAndEchoList($devices, $pingCommand);
 	changeHeader();
@@ -72,7 +72,7 @@ function pingHostsAndEchoList($devices, $pingCommand) {
 	foreach ($devices as $device) {
 		$deviceIP = $device['ip'];
 		$deviceName = $device['name'];
-		$pingResult = shell_exec($pingCommand.' -c 1 -w 1 ' . $deviceIP . ' 2>&1');		// 2>&1 means STDERR to STDOUT.
+		$pingResult = shell_exec($pingCommand . ' -c 1 -w 1 ' . $deviceIP . ' 2>&1');		// 2>&1 means STDERR to STDOUT.
 		if (strpos($pingResult, ' 100%') !== false) {
 			$class = '';
 			// "0% packet loss" or "100% packet loss". 100% means the device is not there.
@@ -122,11 +122,12 @@ function sendBottomHTML($arp) {
 	echo '</body></html>';
 };
 
-function getUdhcpdDevices($udhcpdConfFileLocation) {
+function getUdhcpdDevices(
+	$udhcpdConfFileLocation,
+	$udhcpdRegExpPattern = '/static_lease +([0-9a-fA-F\:]{17}) +([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *#(.*)/'
+) {
 	return array_values(array_filter(array_map(
-		function ($var) {
-			global $udhcpdRegExpPattern;
-			// return strpos($var,'static_lease')!==false;
+		function ($var) use ($udhcpdRegExpPattern) {
 			if (preg_match($udhcpdRegExpPattern, $var, $matches)) {
 				return array(
 					'mac' => $matches[1],
@@ -142,13 +143,14 @@ function getUdhcpdDevices($udhcpdConfFileLocation) {
 
 function getDnsmasqDevices(
 	$dnsmasqConfFileLocation,
-	$hostsFileLocation
+	$hostsFileLocation,
+	$dnsmasqRegExpPattern = '/dhcp-host *= *([0-9a-fA-F\:]{17}) *, *([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/',
+	$hostsRegExpPattern = '/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *(.*)/'
 ) {
 
 	$dnsmasqConfDevices = array_values(array_filter(array_map(
-		function ($var) {
-			$dnsmasqConfRegExpPattern = '/dhcp-host=([0-9a-fA-F\:]{17}),([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/';
-			if (preg_match($dnsmasqConfRegExpPattern, $var, $matches)) {
+		function ($var) use ($dnsmasqRegExpPattern) {
+			if (preg_match($dnsmasqRegExpPattern, $var, $matches)) {
 				return array(
 					'mac' => $matches[1],
 					'ip' => $matches[2]
@@ -160,9 +162,8 @@ function getDnsmasqDevices(
 	)));
 
 	$hostsDevices = array_values(array_filter(array_map(
-		function ($var) {
-			$hostsPattern = '/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *(.*)/';
-			if (preg_match($hostsPattern, $var, $matches)) {
+		function ($var) use ($hostsRegExpPattern) {
+			if (preg_match($hostsRegExpPattern, $var, $matches)) {
 				return array(
 					'ip' => $matches[1],
 					'name' => $matches[2]
@@ -182,30 +183,17 @@ function getDnsmasqDevices(
 			},
 			$dnsmasqConfDevice['ip']
 		);
-		if ($findHostsLine) {
-			array_push(
-				$dnsmasqDeviceList,
-				array(
-					'ip' => $dnsmasqConfDevice['ip'],
-					'mac' => $dnsmasqConfDevice['mac'],
-					'name' => $findHostsLine['name']
-				)
-			);
-		} else {
-			// we have the ip and the mac, but we don't have the name
-			array_push(
-				$dnsmasqDeviceList,
-				array(
-					'ip' => $dnsmasqConfDevice['ip'],
-					'mac' => $dnsmasqConfDevice['mac'],
-					'name' => 'anonymous.'
-				)
-			);
-		}
+		array_push(
+			$dnsmasqDeviceList,
+			array(
+				'ip' => $dnsmasqConfDevice['ip'],
+				'mac' => $dnsmasqConfDevice['mac'],
+				'name' => $findHostsLine ? $findHostsLine['name'] : 'anonymous.'
+			)
+		);
 	}
 	// todo: shell we do something with omitted hosts entries? we should. someday.
-
-
+	
 	return $dnsmasqDeviceList;
 }
 

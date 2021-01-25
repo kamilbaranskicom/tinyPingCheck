@@ -29,13 +29,17 @@ $arpCommand = '/usr/sbin/arp';
 // loads udhcpd.conf and parses for static leases
 $useUdhcpdConf = true;
 $udhcpdConfFileLocation = '/etc/udhcpd.conf';
-$udhcpdRegExpPattern = '/static_lease +([0-9a-fA-F\:]{17}) +([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *#(.*)/';
+// these are defaults:
+// $udhcpdRegExpPattern = '/static_lease +([0-9a-fA-F\:]{17}) +([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *#(.*)/';
 
 
 // loads /etc/dnsmasq.conf and /etc/dnsmasq/hosts/hosts and parses for static leases
 $useDnsmasqConf = true;
 $dnsmasqConfFileLocation = '/etc/dnsmasq.conf';
 $hostsFileLocation = '/etc/dnsmasq/hosts/hosts';
+// these are defaults:
+// $dnsmasqRegExpPattern = '/dhcp-host *= *([0-9a-fA-F\:]{17}) *, *([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/';
+// $hostsRegExpPattern = '/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *(.*)/';
 
 
 // my additional device list
