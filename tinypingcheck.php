@@ -19,17 +19,32 @@ function tinyPingCheck(
 	turnOffCache();
 	sendTopHTML();
 	require_once($configFileLocation);
-	if ($useUdhcpdConf) {
-		$devices = array_merge($devices, getUdhcpdDevices($udhcpdConfFileLocation, $udhcpdRegExpPattern));
-	};
-	if ($useDnsmasqConf) {
-		$devices = array_merge($devices, getDnsmasqDevices($dnsmasqConfFileLocation, $hostsFileLocation, $dnsmasqRegExpPattern, $hostsRegExpPattern));
-	};
+
+	$devices = $useUdhcpdConf ? array_merge(
+		$devices,
+		getUdhcpdDevices(
+			$udhcpdConfFileLocation,
+			$udhcpdRegExpPattern
+		)
+	) : $devices;
+
+	$devices = $useDnsmasqConf ? array_merge(
+		$devices,
+		getDnsmasqDevices(
+			$dnsmasqConfFileLocation,
+			$hostsFileLocation,
+			$dnsmasqRegExpPattern,
+			$hostsRegExpPattern
+		)
+	) : $devices;
+
 	pingHostsAndEchoList($devices, $pingCommand);
 	changeHeader();
+
 	if ($arp) {
 		showArpResults($grep, $arpCommand);
 	};
+
 	sendBottomHTML($arp);
 };
 
@@ -163,6 +178,7 @@ function getDnsmasqDevices(
 
 	$hostsDevices = array_values(array_filter(array_map(
 		function ($var) use ($hostsRegExpPattern) {
+
 			if (preg_match($hostsRegExpPattern, $var, $matches)) {
 				return array(
 					'ip' => $matches[1],
@@ -193,7 +209,7 @@ function getDnsmasqDevices(
 		);
 	}
 	// todo: shell we do something with omitted hosts entries? we should. someday.
-	
+
 	return $dnsmasqDeviceList;
 }
 
@@ -212,4 +228,10 @@ function debugCheck() {
 	var_dump(shell_exec('ping -c 1 -w 1 192.168.50.2 2>&1'));
 	var_dump(shell_exec('which arp'));
 	var_dump(shell_exec('arp'));
+}
+
+function debugVariable($variable) {
+	echo '<blockquote style="background-color:yellow;">';
+	var_dump($variable);
+	echo '</blockquote>';
 }
