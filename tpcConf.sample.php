@@ -1,18 +1,36 @@
 <?php
 
 /* 
- * Copy the file to deviceList.php, setup your device list here!
+ *
+ * Copy the file to tpcConf.php, setup your device list here!
+ * 
+ * 
+ ****************************************************************************
+ * troubleshooting?
+ * 
+ * you might need to "chmod u+s /bin/ping" to allow ping by non-ROOT users.
+ * (but don't do this if /bin/ping is a link to busybox! - security breach!)
+ * same for arp.
+ * 
+ * there's also debugCheck() with some potentially helping output.
+ * (your system can use different ping then /bin/ping).
+ * If so, just remove the "//" before debugCheck(); below.
  */
+
+
+// debugCheck();
 
 
 // some may need different paths
 $pingCommand = '/bin/ping';
-$arpCommand = '/bin/arp';
+$arpCommand = '/usr/sbin/arp';
+
 
 // loads udhcpd.conf and parses for static leases
 $useUdhcpdConf = true;
 $udhcpdConfFileLocation = '/etc/udhcpd.conf';
 $udhcpdRegExpPattern = '/static_lease +([0-9a-fA-F\:]{17}) +([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+) *#(.*)/';
+
 
 // loads /etc/dnsmasq.conf and /etc/dnsmasq/hosts/hosts and parses for static leases
 $useDnsmasqConf = true;

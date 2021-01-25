@@ -1,16 +1,16 @@
 <?php
 
 /*
- * tinypingcheck v 1.12 // 2021.01.25
+ * tinypingcheck v 1.13 // 2021.01.25
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
  * you might need to "chmod u+s /bin/ping" before to allow ping by non-ROOT users. same for arp.
- * copy the deviceList.sample.php to deviceList.php and set your device list there.
+ * copy the tpcConf.sample.php to tpcConf.php and set your device list there.
  */
 
 function tinyPingCheck(
-	$deviceListFileLocation,
+	$configFileLocation,
 	$arp = true,
 	$grep = true
 ) {
@@ -18,7 +18,7 @@ function tinyPingCheck(
 	turnOffOutputBuffering();
 	turnOffCache();
 	sendTopHTML();
-	require_once($deviceListFileLocation);
+	require_once($configFileLocation);
 	if ($useUdhcpdConf) {
 		$devices = array_merge($devices, getUdhcpdDevices($udhcpdConfFileLocation, $udhcpdRegExpPattern));
 	};
