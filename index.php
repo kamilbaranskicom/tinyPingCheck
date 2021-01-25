@@ -1,6 +1,10 @@
 <?php
 /*
+<<<<<<< HEAD
  * tinypingcheck v 1.10 // 2021.01.25
+=======
+ * tinypingcheck v 1.01 // 2021.01.12
+>>>>>>> f0a733b0e49d137a47b9f01a91322750d09ac1e9
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
