@@ -25,6 +25,9 @@
 $pingCommand = '/bin/ping';
 $arpCommand = '/usr/sbin/arp';
 
+// you may want the sorted arp listing:
+// $arpCommand = '/usr/sbin/arp | /usr/bin/sort -V';
+
 
 // loads udhcpd.conf and parses for static leases
 $useUdhcpdConf = true;

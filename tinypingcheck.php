@@ -228,6 +228,7 @@ function debugCheck() {
 	var_dump(shell_exec('ping -c 1 -w 1 192.168.50.2 2>&1'));
 	var_dump(shell_exec('which arp'));
 	var_dump(shell_exec('arp'));
+	var_dump(shell_exec('arp | sort -V'));
 }
 
 function debugVariable($variable) {
