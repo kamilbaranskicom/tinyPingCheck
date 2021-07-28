@@ -13,3 +13,4 @@ Pings devices to check if they exist on network; outputs HTML. Can use `/etc/udh
 * `chmod u+s /usr/sbin/arp`
 * check if `shell_exec` isn't blocked on the server
 * use debugCheck (`which ping`, `which arp`, `whoami`, etc)
+* `chmod 777 /var/www/html/tinyPingCheck/temp`
