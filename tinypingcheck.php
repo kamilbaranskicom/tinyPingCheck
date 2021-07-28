@@ -1,7 +1,7 @@
 <?php
 
 /*
- * tinypingcheck v 1.13 // 2021.01.25
+ * tinypingcheck v 1.14 // 2021.07.28
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
@@ -12,7 +12,8 @@
 function tinyPingCheck(
 	$configFileLocation = __DIR__ . 'tpcConf.php',
 	$arp = true,
-	$grep = true
+	$grep = true,
+	$inBackground = true
 ) {
 	// turnOnErrorReporting();
 	turnOffOutputBuffering();
@@ -38,7 +39,11 @@ function tinyPingCheck(
 		)
 	) : $devices;
 
-	pingHostsAndEchoList($devices, $pingCommand);
+	if ($inBackground) {
+		pingHostsInBackgroundAndEchoList($devices, $pingCommand);
+	} else {
+		pingHostsAndEchoList($devices, $pingCommand);
+	};
 	changeHeader();
 
 	if ($arp) {
@@ -88,6 +93,42 @@ function pingHostsAndEchoList($devices, $pingCommand) {
 		$deviceIP = $device['ip'];
 		$deviceName = $device['name'];
 		$pingResult = shell_exec($pingCommand . ' -c 1 -w 1 ' . $deviceIP . ' 2>&1');		// 2>&1 means STDERR to STDOUT.
+		if (strpos($pingResult, ' 100%') !== false) {
+			$class = '';
+			// "0% packet loss" or "100% packet loss". 100% means the device is not there.
+		} else {
+			$class = ' class="exists"';
+		};
+		echo '<li title="' . $pingResult . '"' . $class . '>' . $deviceIP . ': ' . $deviceName . "\n";
+	}
+	echo '</ul><hr>' . "\n";
+};
+
+function pingHostsInBackgroundAndEchoList($devices, $pingCommand) {
+	echo '<ul>' . "\n";
+
+	// ping hosts (in background, to the temporary files)
+	for ($index = 0; $index < count($devices); $index++) {
+		$deviceIP = $devices[$index]['ip'];
+		$deviceName = $devices[$index]['name'];
+		$processID = shell_exec($pingCommand . ' -c 1 -w 1 ' . $deviceIP . ' > temp/temp_' . $deviceIP . '.txt 2>&1 & echo $!; ');		// 2>&1 means STDERR to STDOUT.
+		$devices[$index]['pid'] = intval($processID);
+	}
+
+	// check and print results
+	for ($index = 0; $index < count($devices); $index++) {
+		$deviceIP = $devices[$index]['ip'];
+		$deviceName = $devices[$index]['name'];
+
+		// wait for pid to end
+		while (posix_getpgid($devices[$index]['pid']) != false) {
+			usleep(1000000 * 0.1);	// wait 0.1 sec
+		}
+
+		// read results and delete the temporary file
+		$pingResult = file_get_contents('temp/temp_' . $deviceIP . '.txt');
+		unlink('temp/temp_' . $deviceIP . '.txt');
+
 		if (strpos($pingResult, ' 100%') !== false) {
 			$class = '';
 			// "0% packet loss" or "100% packet loss". 100% means the device is not there.

@@ -1,6 +1,6 @@
 <?php
 /*
- * tinypingcheck v 1.13 // 2021.01.25
+ * tinypingcheck v 1.14 // 2021.07.28
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
@@ -14,9 +14,11 @@ require_once(__DIR__ . '/tinypingcheck.php');
  *   deviceListFileLocation: __DIR__ . '/deviceList.php'
  *   arp: 1/0 (shows arp list)
  *   grep: 1/0 (exlude (incomplete) arps)
+ *   background: 1/0 (pings in background - requires temp dir)
  */
 tinyPingCheck(
     __DIR__ . '/tpcConf.php',
     isset($_GET['arp']) ? $_GET['arp'] : 1,
-    isset($_GET['grep']) ? $_GET['grep'] : 1
+    isset($_GET['grep']) ? $_GET['grep'] : 1,
+    isset($_GET['background']) ? $_GET['bg'] : 1
 );
