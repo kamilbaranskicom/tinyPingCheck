@@ -1,7 +1,7 @@
 # tinyPingCheck
 Pings devices to check if they exist on network; outputs HTML. Can use `/etc/udhcpd.conf` for `static_leases` lines and also `dnsmasq.conf` with `hosts`.
 
-<img src="screenshot.png">
+<img src="screenshot.png" style="border:2px;padding:10px;margin:10px;opacity:80%;background-color:#d0d0d0;">
 
 ## Usage:
 * copy `tpcConf.sample.php` to `tpcConf.php`
