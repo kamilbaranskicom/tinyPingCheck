@@ -1,0 +1,5 @@
+This directory is needed for redirecting ping results here if pinging in background.
+
+The script must have permissions to write here.
+
+(Or you can use the ?background=0 option, but the results will appear slower.)
