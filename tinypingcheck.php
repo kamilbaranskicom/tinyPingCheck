@@ -107,11 +107,14 @@ function pingHostsAndEchoList($devices, $pingCommand) {
 function pingHostsInBackgroundAndEchoList($devices, $pingCommand) {
 	echo '<ul>' . "\n";
 
+	// let's generate random string for temporary filenames to lower the probability of deleted files by simultaneous script execution
+	$randomString = substr(md5(rand()), 0, 7);
+
 	// ping hosts (in background, to the temporary files)
 	for ($index = 0; $index < count($devices); $index++) {
 		$deviceIP = $devices[$index]['ip'];
 		$deviceName = $devices[$index]['name'];
-		$processID = shell_exec($pingCommand . ' -c 1 -w 1 ' . $deviceIP . ' > temp/temp_' . $deviceIP . '.txt 2>&1 & echo $!; ');		// 2>&1 means STDERR to STDOUT.
+		$processID = shell_exec($pingCommand . ' -c 1 -w 1 ' . $deviceIP . ' > temp/temp' . $randomString . '_' . $deviceIP . '.txt 2>&1 & echo $!; ');		// 2>&1 means STDERR to STDOUT.
 		$devices[$index]['pid'] = intval($processID);
 	}
 
@@ -126,8 +129,8 @@ function pingHostsInBackgroundAndEchoList($devices, $pingCommand) {
 		}
 
 		// read results and delete the temporary file
-		$pingResult = file_get_contents('temp/temp_' . $deviceIP . '.txt');
-		unlink('temp/temp_' . $deviceIP . '.txt');
+		$pingResult = file_get_contents('temp/temp' . $randomString . '_' . $deviceIP . '.txt');
+		unlink('temp/temp' . $randomString . '_' . $deviceIP . '.txt');
 
 		if (strpos($pingResult, ' 100%') !== false) {
 			$class = '';
