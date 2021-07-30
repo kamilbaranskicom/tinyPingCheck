@@ -78,6 +78,7 @@ function turnOffCache() {
 
 function sendTopHTML() {
 	echo '<html><head>
+<meta charset="UTF-8">
 <style>
 LI { color: #a0a0a0; }
 .exists { color: black; font-weight: bold; }
