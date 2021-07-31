@@ -1,7 +1,7 @@
 <?php
 
 /*
- * tinypingcheck v 1.14 // 2021.07.28
+ * tinypingcheck v 1.15 // 2021.07.31
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
@@ -80,8 +80,9 @@ function sendTopHTML() {
 	echo '<html><head>
 <meta charset="UTF-8">
 <style>
-LI { color: #a0a0a0; }
-.exists { color: black; font-weight: bold; }
+BODY { background-color: #a0a0a0; }
+LI { opacity: 40% }
+.exists { opacity:100%; font-weight: bold; }
 .hidden { display: none; }
 </style>
 </head><body>';
