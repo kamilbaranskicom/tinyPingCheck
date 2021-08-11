@@ -1,6 +1,6 @@
 <?php
 /*
- * tinypingcheck v 1.15 // 2021.07.31
+ * tinypingcheck v 1.16 // 2021.08.11
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
@@ -20,5 +20,6 @@ tinyPingCheck(
     __DIR__ . '/tpcConf.php',
     isset($_GET['arp']) ? $_GET['arp'] : 1,
     isset($_GET['grep']) ? $_GET['grep'] : 1,
-    isset($_GET['background']) ? $_GET['bg'] : 1
+    isset($_GET['background']) ? $_GET['bg'] : 1,
+    isset($_GET['dumpleases']) ? $_GET['dumpleases'] : 1
 );

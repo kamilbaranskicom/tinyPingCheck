@@ -1,19 +1,23 @@
 <?php
 
 /*
- * tinypingcheck v 1.15 // 2021.07.31
+ * tinypingcheck v 1.16 // 2021.08.11
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
- * you might need to "chmod u+s /bin/ping" before to allow ping by non-ROOT users. same for arp.
- * copy the tpcConf.sample.php to tpcConf.php and set your device list there.
+ * configuration?
+ *   copy the tpcConf.sample.php to tpcConf.php and set your device list there.
+ * 
+ * troubleshooting?
+ *   check the tpcConf.php file.
  */
 
 function tinyPingCheck(
 	$configFileLocation = __DIR__ . 'tpcConf.php',
 	$arp = true,
 	$grep = true,
-	$inBackground = true
+	$inBackground = true,
+	$dumpleases = true
 ) {
 	// turnOnErrorReporting();
 	turnOffOutputBuffering();
@@ -49,8 +53,11 @@ function tinyPingCheck(
 	if ($arp) {
 		showArpResults($grep, $arpCommand);
 	};
+	if ($dumpleases) {
+		showDumpleasesResults($dumpleasesCommand);
+	};
 
-	sendBottomHTML($arp);
+	sendBottomHTML($arp, $dumpleases);
 };
 
 function turnOnErrorReporting() {
@@ -169,16 +176,26 @@ function isComplete($line) {
 	return (strpos($line, '(incomplete)') === false);
 };
 
+function showDumpleasesResults($dumpleasesCommand) {
+	echo '<div class="hidden" id="dumpleasesDiv"><h1>[' . gethostname() . ':~]$ dumpleases</h1>' . "\n<pre>";
+	$dumpleasesResults = shell_exec($dumpleasesCommand);
+	echo $dumpleasesResults;
+	echo '<hr></pre></div>';
+}
+
 function changeHeader() {
 	echo "<script>
 	document.querySelector('#header').innerText = 'Lista:';
 </script>";
 };
 
-function sendBottomHTML($arp) {
+function sendBottomHTML($arp, $dumpleases) {
 	if ($arp) {
 		echo "<a onclick=\"document.querySelector('#arpDiv').classList.remove('hidden');this.classList.add('hidden');\" title=\"Press for arp results\">[arp]</a> ";
 	};
+	if ($dumpleases) {
+		echo "<a onclick=\"document.querySelector('#dumpleasesDiv').classList.remove('hidden');this.classList.add('hidden');\" title=\"Press for dumpleases results\">[dumpleases]</a> ";
+	}
 	echo 'dziękuję, do kasy. / &copy; <a href="http://kamilbaranski.com/">kb</a> 2021' . "\n";
 	echo '</body></html>';
 };
@@ -269,16 +286,25 @@ function array_find($array, $functionName, ...$parameters) {
 }
 
 function debugCheck() {
-	var_dump(shell_exec('whoami'));
-	var_dump(shell_exec('which ping'));
-	var_dump(shell_exec('ping -c 1 -w 1 192.168.50.2 2>&1'));
-	var_dump(shell_exec('which arp'));
-	var_dump(shell_exec('arp'));
-	var_dump(shell_exec('arp | sort -V'));
+	echo '<pre>';
+	debugRun('whoami');
+	debugRun('which ping');
+	debugRun('ping -c 1 -w 1 192.168.50.2 2>&1');
+	debugRun('which arp');
+	debugRun('arp');
+	debugRun('arp | sort -V');
+	debugRun('which dumpleases');
+	debugRun('dumpleases');
+	echo '</pre>';
 }
 
-function debugVariable($variable) {
-	echo '<blockquote style="background-color:yellow;">';
+function debugRun($command) {
+	debugVariable($command, shell_exec($command));
+}
+
+function debugVariable($name,$variable) {
+	echo '<blockquote style="background-color:yellow;font-weight:bold;">'.$name.'</blockquote>';
+	echo '<blockquote>';
 	var_dump($variable);
 	echo '</blockquote>';
 }

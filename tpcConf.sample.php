@@ -2,7 +2,7 @@
 
 /* 
  *
- * Copy the file to tpcConf.php, setup your device list here!
+ * Copy the file to tpcConf.php, setup your device list source here!
  * 
  * 
  ****************************************************************************
@@ -10,7 +10,7 @@
  * 
  * you might need to "chmod u+s /bin/ping" to allow ping by non-ROOT users.
  * (but don't do this if /bin/ping is a link to busybox! - security breach!)
- * same for arp.
+ * same for arp and dumpleases.
  * 
  * there's also debugCheck() with some potentially helping output.
  * (your system can use different ping then /bin/ping).
@@ -24,6 +24,7 @@
 // some may need different paths
 $pingCommand = '/bin/ping';
 $arpCommand = '/usr/sbin/arp';
+$dumpleasesCommand = '/usr/bin/dumpleases';
 
 // you may want the sorted arp listing:
 // $arpCommand = '/usr/sbin/arp | /usr/bin/sort -V';
