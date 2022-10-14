@@ -1,7 +1,7 @@
 <?php
 
 /*
- * tinypingcheck v 1.16 // 2021.08.11
+ * tinypingcheck v 1.17 // 2022.10.14
  * (c) kamilbaranski.com
  * nothing guaranteed:)
  *
