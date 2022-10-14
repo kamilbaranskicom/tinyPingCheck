@@ -196,7 +196,7 @@ function sendBottomHTML($arp, $dumpleases) {
 	if ($dumpleases) {
 		echo "<a onclick=\"document.querySelector('#dumpleasesDiv').classList.remove('hidden');this.classList.add('hidden');\" title=\"Press for dumpleases results\">[dumpleases]</a> ";
 	}
-	echo 'dziękuję, do kasy. / &copy; <a href="http://kamilbaranski.com/">kb</a> 2021' . "\n";
+	echo 'dziękuję, do kasy. / &copy; <a href="http://kamilbaranski.com/">kb</a> 2022' . "\n";
 	echo '</body></html>';
 };
 
