@@ -23,8 +23,8 @@
 
 // some may need different paths
 $pingCommand = '/bin/ping';
-$arpCommand = '/usr/sbin/arp';
-$dumpleasesCommand = '/usr/bin/dumpleases';
+$arpCommand = '/usr/sbin/arp | (sed -u 1q; sort -t . -k 3,3n -k 4,4n)';
+$dumpleasesCommand = '/usr/bin/dumpleases | (sed -u 1q; sort --key=1.55)';
 
 // you may want the sorted arp listing:
 // $arpCommand = '/usr/sbin/arp | /usr/bin/sort -V';

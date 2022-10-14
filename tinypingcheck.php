@@ -161,7 +161,7 @@ function showArpResults($grep, $arpCommand) {
 		echo "this.classList.add('hidden');\" title=\"Press for all records (including incomplete)\">";
 		echo ' | grep -v "(incomplete)"</span>';
 	};
-	echo '</h1>' . "\n<pre>";
+	echo ' | (sed -u 1q; sort -t . -k 3,3n -k 4,4n)</h1>' . "\n<pre>";
 	$arpResults = array_filter(explode("\n", shell_exec($arpCommand)), 'strlen');
 	echo join("\n", array_filter($arpResults, 'isComplete'));
 	echo "\n" . '<span id="incomplete" class="hidden">';
@@ -177,7 +177,7 @@ function isComplete($line) {
 };
 
 function showDumpleasesResults($dumpleasesCommand) {
-	echo '<div class="hidden" id="dumpleasesDiv"><h1>[' . gethostname() . ':~]$ dumpleases</h1>' . "\n<pre>";
+	echo '<div class="hidden" id="dumpleasesDiv"><h1>[' . gethostname() . ':~]$ dumpleases | (sed -u 1q; sort --key=1.55)</h1>' . "\n<pre>";
 	$dumpleasesResults = shell_exec($dumpleasesCommand);
 	echo $dumpleasesResults;
 	echo '<hr></pre></div>';
