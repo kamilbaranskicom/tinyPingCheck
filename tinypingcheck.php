@@ -91,6 +91,7 @@ BODY { background-color: #a0a0a0; }
 LI { opacity: 40% }
 .exists { opacity:100%; font-weight: bold; }
 .hidden { display: none; }
+A, SPAN[onclick] { color: navy; text-decoration: none; border-bottom: 1px dashed navy; }
 </style>
 </head><body>';
 	echo '<h1 id="header">wait...</h1>';
